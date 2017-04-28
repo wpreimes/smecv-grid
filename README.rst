@@ -3,13 +3,14 @@ smecv_grid
 ==========
 
 
-Add a short description here!
+Grid definition of the Discrete Global Grid (DGG) used for the creation of the CCI soil moisture products
+the Copernicus Climate Change Service products.
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+The DGG is a regular 0.25 degree grid utilizing cell partitioning.
 
 
 Note

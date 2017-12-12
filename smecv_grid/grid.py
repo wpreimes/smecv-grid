@@ -2,14 +2,18 @@ import os
 import pygeogrids.netcdf as ncgrid
 
 
-def get_grid_definition_filename():
+def get_grid_definition_filename(version=42):
     """
     Get file path of netcdf
     """
     grid_info_path = os.path.join(os.path.dirname(__file__),
                                   'definition_files')
-    return os.path.join(grid_info_path,
-                        'ESA-CCI-SOILMOISTURE-LAND_AND_RAINFOREST_MASK-fv04.2.nc')
+    if version==43:
+        fn = 'ESA-CCI-SOILMOISTURE-LAND_AND_RAINFOREST_MASK-fv04.3.nc'
+    elif version==42:
+        fn = 'ESA-CCI-SOILMOISTURE-LAND_AND_RAINFOREST_MASK-fv04.2.nc'
+
+    return os.path.join(grid_info_path, fn)
 
 
 def SMECV_Grid_v042(subset_flag='land'):
@@ -23,4 +27,20 @@ def SMECV_Grid_v042(subset_flag='land'):
         CellGrid object
     """
     return ncgrid.load_grid(get_grid_definition_filename(),
+                            subset_flag=subset_flag)
+
+def SMECV_Grid_v043(subset_flag='land'):
+    """
+    Load ECV grid from netcdf file.
+    This grid has 2D shape information, also a rainforest mask is included.
+    The land mask is the same that is defined in gridv4.
+
+    v04.3 includes Antarctica
+
+    Returns
+    -------
+    grid : pygeogrids.CellGrid
+        CellGrid object
+    """
+    return ncgrid.load_grid(get_grid_definition_filename(version=43),
                             subset_flag=subset_flag)

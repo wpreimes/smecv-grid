@@ -31,7 +31,7 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 
-  - conda env create -f conda_environment.yml
+  - conda env create -f environment.yml
   - source activate smecv_grid
   - conda list
   - pip install .

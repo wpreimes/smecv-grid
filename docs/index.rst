@@ -1,9 +1,4 @@
-==========
-smecv-grid
-==========
-
 .. include:: ../README.rst
-
 .. include:: grid.rst
 
 

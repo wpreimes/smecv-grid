@@ -1,8 +1,8 @@
 ==========
-smecv_grid
+smecv-grid
 ==========
 
-This is the documentation of **smecv_grid**.
+This is the documentation of **smecv-grid**.
 
 .. note::
 

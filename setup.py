@@ -3,7 +3,7 @@
 """
     Setup file for smecv_grid.
 
-    This file was generated with PyScaffold 2.5.7, a tool that easily
+    This file was generated with PyScaffold 2.5.11, a tool that easily
     puts up a scaffold for your new Python project. Learn more under:
     http://pyscaffold.readthedocs.org/
 """

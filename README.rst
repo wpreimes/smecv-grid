@@ -11,6 +11,9 @@ smecv_grid
 .. image:: https://readthedocs.org/projects/smecv-grid/badge/?version=latest
     :target: http://smecv-grid.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://badge.fury.io/py/smecv-grid.svg
+    :target: https://badge.fury.io/py/smecv-grid
+
 Grid definition of the Discrete Global Grid (DGG) used for the creation of the CCI soil moisture products and
 the Copernicus Climate Change Service products.
 

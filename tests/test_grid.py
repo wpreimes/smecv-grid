@@ -28,7 +28,6 @@ def test_SMECV_Grid_global():
     assert grid.activegpis.size == 1036800
     assert SMECV_Grid_v050(subset_flag=None) == grid
 
-
 def test_SMECV_Grid_rainforest():
     grid = SMECV_Grid_v042(subset_flag='rainforest')
     gp, dist = grid.find_nearest_gpi(27.44, -0.33)

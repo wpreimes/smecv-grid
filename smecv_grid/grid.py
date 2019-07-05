@@ -29,7 +29,7 @@ def SMECV_Grid_v042(subset_flag='land'):
     return ncgrid.load_grid(get_grid_definition_filename(version='04.2'),
                             subset_flag=subset_flag, subset_value=1.)
 
-def SMECV_Grid_v050(subset_flag='land', subset_value=1.):
+def SMECV_Grid_v052(subset_flag='land', subset_value=1.):
     """
     Load ECV grid from netcdf file.
     This grid has 2D shape information, also a rainforest mask is included.

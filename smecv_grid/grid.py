@@ -50,5 +50,5 @@ def SMECV_Grid_v050(subset_flag='land', subset_value=1.):
     grid : pygeogrids.CellGrid
         CellGrid object of the selected subset. In Quarter Degree
     """
-    return ncgrid.load_grid(get_grid_definition_filename(version='05.0'),
+    return ncgrid.load_grid(get_grid_definition_filename(version='05.2'),
                             subset_flag=subset_flag, subset_value=subset_value)

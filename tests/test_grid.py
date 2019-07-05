@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from smecv_grid.grid import SMECV_Grid_v042, SMECV_Grid_v050
+from smecv_grid.grid import SMECV_Grid_v042, SMECV_Grid_v052
 
 
 def test_SMECV_Grid_land():
@@ -14,7 +14,7 @@ def test_SMECV_Grid_land():
     assert grid.gpis.size == 1036800
     assert grid.activegpis.size == 244243
     assert grid.gpis[0] == 1035360
-    assert SMECV_Grid_v050() == grid
+    assert SMECV_Grid_v052() == grid
 
 def test_SMECV_Grid_global():
     grid = SMECV_Grid_v042(subset_flag=None)
@@ -26,7 +26,7 @@ def test_SMECV_Grid_global():
     assert grid.gpi2cell(739040) == 601
     assert grid.gpis.size == 1036800
     assert grid.activegpis.size == 1036800
-    assert SMECV_Grid_v050(subset_flag=None) == grid
+    assert SMECV_Grid_v052(subset_flag=None) == grid
 
 def test_SMECV_Grid_rainforest():
     grid = SMECV_Grid_v042(subset_flag='rainforest')
@@ -38,10 +38,10 @@ def test_SMECV_Grid_rainforest():
     assert grid.gpi2cell(516349) == 1493
     assert grid.gpis.size == 1036800
     assert grid.activegpis.size == 14851
-    assert SMECV_Grid_v050(subset_flag='rainforest') == grid
+    assert SMECV_Grid_v052(subset_flag='rainforest') == grid
 
 def test_SMECV_Grid_v050_denseveg():
-    grid = SMECV_Grid_v050(subset_flag='high_vod')
+    grid = SMECV_Grid_v052(subset_flag='high_vod')
     gp, dist = grid.find_nearest_gpi(27.44, -0.33)
     assert gp == 516349
     lon, lat = grid.gpi2lonlat(516349)
@@ -54,7 +54,7 @@ def test_SMECV_Grid_v050_denseveg():
     assert grid.activegpis[0] == 272127
 
 def test_SMECV_Grid_v050_urban():
-    grid = SMECV_Grid_v050(subset_flag='landcover_class', subset_value=190.)
+    grid = SMECV_Grid_v052(subset_flag='landcover_class', subset_value=190.)
     gp, dist = grid.find_nearest_gpi(139.65, 35.68)
     assert gp == 724158
     lon, lat = grid.gpi2lonlat(724158)
@@ -67,7 +67,7 @@ def test_SMECV_Grid_v050_urban():
     assert grid.activegpis[0] == 300820
 
 def test_SMECV_Grid_v050_desert():
-    grid = SMECV_Grid_v050(subset_flag='landcover_class', subset_value=[190., 200.])
+    grid = SMECV_Grid_v052(subset_flag='landcover_class', subset_value=[190., 200.])
     gp, dist = grid.find_nearest_gpi(9.375, 24.125)
     assert gp == 657397
     lon, lat = grid.gpi2lonlat(657397)

@@ -54,7 +54,7 @@ def test_SMECV_Grid_v050_denseveg():
     assert grid.activegpis[0] == 272127
 
 def test_SMECV_Grid_v050_urban():
-    grid = SMECV_Grid_v050(subset_flag='cci_lc', subset_value=190.)
+    grid = SMECV_Grid_v050(subset_flag='landcover_class', subset_value=190.)
     gp, dist = grid.find_nearest_gpi(139.65, 35.68)
     assert gp == 724158
     lon, lat = grid.gpi2lonlat(724158)
@@ -67,7 +67,7 @@ def test_SMECV_Grid_v050_urban():
     assert grid.activegpis[0] == 300820
 
 def test_SMECV_Grid_v050_desert():
-    grid = SMECV_Grid_v050(subset_flag='cci_lc', subset_value=[190., 200.])
+    grid = SMECV_Grid_v050(subset_flag='landcover_class', subset_value=[190., 200.])
     gp, dist = grid.find_nearest_gpi(9.375, 24.125)
     assert gp == 657397
     lon, lat = grid.gpi2lonlat(657397)

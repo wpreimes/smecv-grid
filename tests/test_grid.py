@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from smecv_grid.grid import SMECV_Grid_v042, SMECV_Grid_v052
+from smecv_grid import SMECV_Grid_v042, SMECV_Grid_v052
 
 
 def test_SMECV_Grid_land():

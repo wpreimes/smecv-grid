@@ -2,3 +2,4 @@
 # numpy
 # scipy>=0.9
 pygeogrids>=0.2.6
+more_itertools

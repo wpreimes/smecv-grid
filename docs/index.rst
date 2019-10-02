@@ -1,5 +1,5 @@
 .. include:: ../README.rst
-.. include:: grid.rst
+.. include:: grid_cmds.rst
 .. include:: esa_cci_lc_classes.rst
 
 

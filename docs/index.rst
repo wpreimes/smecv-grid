@@ -3,8 +3,6 @@
 .. include:: esa_cci_lc_classes.rst
 .. include:: peel_kg_classes.rst
 
-
-
 Contents
 ========
 

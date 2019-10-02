@@ -4,7 +4,7 @@ Changelog
 
 unreleased
 ==========
--
+- Add more examples on how to use the grids in docs
 
 Version 0.2
 ===========

@@ -21,7 +21,7 @@ soil moisture products and the Copernicus Climate Change Service products.
 
 Full Documentation
 ==================
-For the full documentation, click `here <http://smecv-grid.readthedocs.io/en/latest>`_,
+For the full documentation click `here <http://smecv-grid.readthedocs.io/en/latest>`_,
 or follow the docs-badge at the top.
 
 Installation
@@ -47,7 +47,7 @@ It contains masks for:
 - One or multiple ESA CCI LC classes (reference year 2010)
 - One or multiple Koeppen-Geiger climate classes (`Peel et al. 2007 <https://www.hydrol-earth-syst-sci.net/11/1633/2007/>`_, DOI:10.5194/hess-11-1633-2007).
 
-For more information on grid definitions, and the usage of grids,we refer to
+For more information on grid definitions and the usage of grids, we refer to
 the `pygeogrids package <https://github.com/TUW-GEO/pygeogrids>`_ in the background.
 
 

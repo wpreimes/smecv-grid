@@ -41,16 +41,11 @@ The smecv_grid package contains the global quarter degree (0.25x0.25 DEG) grid
 definition, used for organising the ESA CCI SM and C3S SM data products.
 It contains masks for:
 
- - Land Points (default)
- - Dense Vegetation (AMSR-E LPRMv6 VOD>0.526),
- - Rainforest Areas
- - One or multiple ESA CCI LC classes (reference year 2010)
- - One or multiple Koeppen-Geiger climate classes (`Peel et al. 2007 <https://www.hydrol-earth-syst-sci.net/11/1633/2007/>`_, DOI:10.5194/hess-11-1633-2007).
-
-Grid points are arranged in 5x5 degree cells with 400 grid points per cell.
-
-  .. image:: 5x5_cell_partitioning_cci.png
-     :target: 5x5_cell_partitioning_cci.png
+- Land Points (default)
+- Dense Vegetation (AMSR-E LPRMv6 VOD>0.526),
+- Rainforest Areas
+- One or multiple ESA CCI LC classes (reference year 2010)
+- One or multiple Koeppen-Geiger climate classes (`Peel et al. 2007 <https://www.hydrol-earth-syst-sci.net/11/1633/2007/>`_, DOI:10.5194/hess-11-1633-2007).
 
 For more information on grid definitions, and the usage of grids,we refer to
 the `pygeogrids package <https://github.com/TUW-GEO/pygeogrids>`_ in the background.
@@ -82,8 +77,3 @@ in `pygeogrids <https://github.com/TUW-GEO/pygeogrids>`_
     tropical_grid = SMECV_Grid_v052(subset_flag='climate_class',
         subset_value=[0., 1., 2.])
 
-Note
-====
-
-This project has been set up using PyScaffold 2.5.11. For details and usage
-information on PyScaffold see http://pyscaffold.readthedocs.org/.

@@ -40,7 +40,7 @@ def test_SMECV_Grid_rainforest():
     assert grid.activegpis.size == 14851
     assert SMECV_Grid_v052(subset_flag='rainforest') == grid
 
-def test_SMECV_Grid_v050_denseveg():
+def test_SMECV_Grid_v052_denseveg():
     grid = SMECV_Grid_v052(subset_flag='high_vod')
     gp, dist = grid.find_nearest_gpi(27.44, -0.33)
     assert gp == 516349
@@ -53,7 +53,7 @@ def test_SMECV_Grid_v050_denseveg():
     assert grid.gpis[0] == 0
     assert grid.activegpis[0] == 272127
 
-def test_SMECV_Grid_v050_urban():
+def test_SMECV_Grid_v052_urban():
     grid = SMECV_Grid_v052(subset_flag='landcover_class', subset_value=190.)
     gp, dist = grid.find_nearest_gpi(139.65, 35.68)
     assert gp == 724158
@@ -66,9 +66,10 @@ def test_SMECV_Grid_v050_urban():
     assert grid.gpis[0] == 0
     assert grid.activegpis[0] == 300820
 
-def test_SMECV_Grid_v050_desert():
+def test_SMECV_Grid_v052_desert():
     grid = SMECV_Grid_v052(subset_flag='landcover_class', subset_value=[190., 200.])
     gp, dist = grid.find_nearest_gpi(9.375, 24.125)
+    assert dist == 0.
     assert gp == 657397
     lon, lat = grid.gpi2lonlat(657397)
     assert lon == 9.375
@@ -78,3 +79,17 @@ def test_SMECV_Grid_v050_desert():
     assert grid.activegpis.size == 421+31162
     assert grid.gpis[0] == 0
     assert grid.activegpis[0] == 232835
+
+def test_SMECV_Grid_v052_tropical():
+    grid = SMECV_Grid_v052(subset_flag='climate_class', subset_value=[0., 1., 2.])
+    gp, dist = grid.find_nearest_gpi(-66.125, -8.125)
+    assert gp == 471335
+    assert dist == 0.
+    lon, lat = grid.gpi2lonlat(471335)
+    assert lon == -66.125
+    assert lat == -8.125
+    assert grid.gpi2cell(471335) == 808
+    assert grid.gpis.size == 1036800
+    assert grid.activegpis.size == 36949
+    assert grid.gpis[0] == 0
+    assert grid.activegpis[0] == 366610

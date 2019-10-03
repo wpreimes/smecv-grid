@@ -4,7 +4,7 @@ Changelog
 
 unreleased
 ==========
--
+- Add more examples on how to use the grids in docs
 
 Version 0.2
 ===========
@@ -12,7 +12,6 @@ Version 0.2
 - Add high VOD mask and ESA CCI LC classes.
 - Allow reducing grid based on ESA CCI LC classes
 - Allow reducing grid based on Koeppen-Geiger climate classes
-
 
 Version 0.1
 ===========

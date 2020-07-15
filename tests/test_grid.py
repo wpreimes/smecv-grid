@@ -1,5 +1,25 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# The MIT License (MIT)
+#
+# Copyright (c) 2020, TU Wien
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from smecv_grid import SMECV_Grid_v042, SMECV_Grid_v052
 import pytest
@@ -108,20 +128,18 @@ def test_bbox_subgrid(SMECV_Grid):
     assert subgrid.activegpis.size == 18408
 
 def test_vers_diff():
-    grid4 = SMECV_Grid_v042('land')
-    grid5 = SMECV_Grid_v052('land')
-    assert grid4.find_nearest_gpi(16.3,48.1)[0] == grid5.find_nearest_gpi(16.3,48.1)[0]
-    assert grid4.gpi2cell(grid4.find_nearest_gpi(16.3,48.1)[0]) == \
-           grid5.gpi2cell(grid5.find_nearest_gpi(16.3,48.1)[0])
-    assert grid5.arrlat[546546] == -1 * grid4.arrlat[546546] # because lats got flipped
-    assert SMECV_Grid_v052(None).activegpis[0] == 0
-    assert SMECV_Grid_v052(None).activearrcell[0] == 0
-    assert SMECV_Grid_v042(None).activegpis[0] == 1035360
-    assert SMECV_Grid_v042(None).activearrcell[0] == 35
+    landgrid4, globgrid4 = SMECV_Grid_v042('land'), SMECV_Grid_v042(None)
+    landgrid5, globgrid5 = SMECV_Grid_v052('land'), SMECV_Grid_v052(None)
+    assert landgrid4.find_nearest_gpi(16.3,48.1)[0] == landgrid5.find_nearest_gpi(16.3,48.1)[0]
+    assert landgrid4.gpi2cell(landgrid4.find_nearest_gpi(16.3,48.1)[0]) == \
+           landgrid5.gpi2cell(landgrid5.find_nearest_gpi(16.3,48.1)[0])
+    assert landgrid5.arrlat[546546] == -1 * landgrid4.arrlat[546546] # because lats got flipped
+    assert globgrid5.activegpis[0] == 0
+    assert globgrid5.activearrcell[0] == 0
+    assert globgrid4.activegpis[0] == 1035360
+    assert globgrid4.activearrcell[0] == 35
 
     # the differences are not affecting pygeogrids equals function
-    assert SMECV_Grid_v042(None) == SMECV_Grid_v052(None)
-    assert SMECV_Grid_v042('land') == SMECV_Grid_v052('land')
+    assert globgrid4 == globgrid5
+    assert landgrid4 == landgrid5
     assert SMECV_Grid_v042('rainforest') == SMECV_Grid_v052('rainforest')
-
-

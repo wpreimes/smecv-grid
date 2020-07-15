@@ -34,7 +34,7 @@ The package is available on pypi and can be installed via pip:
     pip install smecv_grid
 
 
-Loading and using the smecv grid
+Loading and using the SMECV grid
 ================================
 
 The smecv_grid package contains the global quarter degree (0.25x0.25 DEG) grid
@@ -47,23 +47,8 @@ It contains masks for:
 - One or multiple ESA CCI LC classes (reference year 2010)
 - One or multiple Koeppen-Geiger climate classes (`Peel et al. 2007 <https://www.hydrol-earth-syst-sci.net/11/1633/2007/>`_, DOI:10.5194/hess-11-1633-2007).
 
-For more information on grid definitions and the usage of grids, we refer to
+For more information on grid definitions and the usage of grids in general, we refer to
 the `pygeogrids package <https://github.com/TUW-GEO/pygeogrids>`_ in the background.
-
-Different versions of the grid are implemented,
-
-`SMECV_Grid_v042` : Grid used in the generation of ESA CCI SM v4.x / C3S SM v201x.x.x data.
-Global quarter degree grid, with 5 degree cell partitioning, contains masks
-for landpoints and rainforest areas.
-
-`SMECV_Grid_v052` : Grid used in the generation of ESA CCI SM v5.x / C3S SM v202x.x.x data.
-Global quarter degree grid, with 5 degree cell partitioning, contains masks
-for landpoints, rainforests, multiple landcover/climate classes and
-high VOD (based on AMSR-E VOD) regions. Compared to v4 grid, the latitudes and
-gpis in the grid are sorted differently, this means that
-`SMECV_Grid_v052(None).activegpis[0]` is **0** while
-`SMECV_Grid_v042(None).activegpis[0]` is **1035360**. However, in both cases
-e.g. `grid.find_nearest_gpi(16.3,48.1)` is **795665** in cell **1431**
 
 
 Loading the grid

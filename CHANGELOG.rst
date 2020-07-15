@@ -2,9 +2,18 @@
 Changelog
 =========
 
-unreleased
+Unreleased
 ==========
+
+-
+
+Version 0.3
+===========
+
 - Add more examples on how to use the grids in docs
+- Flip lats in grid v5 so that gpi can be used for indexing arrays
+- New pyscaffold structure
+- Travis pypi deployment
 
 Version 0.2
 ===========

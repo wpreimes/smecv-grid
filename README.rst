@@ -21,8 +21,8 @@ soil moisture products and the Copernicus Climate Change Service products.
 
 Full Documentation
 ==================
-For the full documentation click `here <http://smecv-grid.readthedocs.io/en/latest>`_,
-or follow the docs-badge at the top.
+For the `full documentation  <http://smecv-grid.readthedocs.io/en/latest>`_,
+click on the docs-badge at the top.
 
 Installation
 ============
@@ -49,6 +49,21 @@ It contains masks for:
 
 For more information on grid definitions and the usage of grids, we refer to
 the `pygeogrids package <https://github.com/TUW-GEO/pygeogrids>`_ in the background.
+
+Different versions of the grid are implemented,
+
+`SMECV_Grid_v042` : Grid used in the generation of ESA CCI SM v4.x / C3S SM v201x.x.x data.
+Global quarter degree grid, with 5 degree cell partitioning, contains masks
+for landpoints and rainforest areas.
+
+`SMECV_Grid_v052` : Grid used in the generation of ESA CCI SM v5.x / C3S SM v202x.x.x data.
+Global quarter degree grid, with 5 degree cell partitioning, contains masks
+for landpoints, rainforests, multiple landcover/climate classes and
+high VOD (based on AMSR-E VOD) regions. Compared to v4 grid, the latitudes and
+gpis in the grid are sorted differently, this means that
+`SMECV_Grid_v052(None).activegpis[0]` is **0** while
+`SMECV_Grid_v042(None).activegpis[0]` is **1035360**. However, in both cases
+e.g. `grid.find_nearest_gpi(16.3,48.1)` is **795665** in cell **1431**
 
 
 Loading the grid
@@ -77,3 +92,6 @@ in `pygeogrids <https://github.com/TUW-GEO/pygeogrids>`_
     tropical_grid = SMECV_Grid_v052(subset_flag='climate_class',
         subset_value=[0., 1., 2.])
 
+To see all available classes and subset values see tables on implemented
+`ESA CCI LC <https://smecv-grid.readthedocs.io/en/latest/?badge=latest#esa-cci-land-cover-classes>`_
+and `KG Climate classes <https://smecv-grid.readthedocs.io/en/latest/?badge=latest#kg-climate-classification>`_

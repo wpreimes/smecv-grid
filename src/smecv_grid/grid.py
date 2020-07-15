@@ -27,7 +27,7 @@ from pygeogrids.grids import BasicGrid, CellGrid, lonlat2cell
 import numpy as np
 import warnings
 
-def get_grid_definition_filename(version):
+def get_grid_definition_filename(version:str) -> str:
     """
     Get file path of netcdf for the passed version as in the file name.
     """
@@ -60,11 +60,14 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False):
         will NOT return the correct gpi, i.e the gpi can't be used to index the
         arrays. This option was used in grid v4 and changed afterwards and is
         kept for backwards compatibility. Should NOT be used anymore.
-            e.g. SMECV_Grid_v042(None).activegpis[0] is 1035360 SMECV_Grid_v042(None).activearrlat[0] is 89.875
-                but SMECV_Grid_v052(None).activegpis[0] is 0, and SMECV_Grid_v052(None).activearrlat[0] is -89.875
-            e.g. grid.find_nearest_gpi(-100.375,38.375) will return in both versions
-            (739038, 0.0)
-            but SMECV_Grid_v042(None).arrlat[739038] is -38.375 and not 38.375 as in v5
+        ------------------------------------------------------------------------
+        e.g. SMECV_Grid_v042(None).activegpis[0] is 1035360
+        and SMECV_Grid_v042(None).activearrlat[0] is 89.875
+        but SMECV_Grid_v052(None).activegpis[0] is 0,
+        and SMECV_Grid_v052(None).activearrlat[0] is -89.875
+        e.g. grid.find_nearest_gpi(-100.375,38.375) will return in both versions
+        (739038, 0.0) but SMECV_Grid_v042(None).arrlat[739038] is -38.375 and
+        not 38.375 as it is in v5.
 
     Returns
     -------
@@ -72,7 +75,7 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False):
         Global flattened longitudes for ALL gpis
     lat : np.array
         Global flattened latitudes for ALL gpis
-    gpi : np.array
+    gpis : np.array
         Global gpis, with gpi 0 close to (-180,-90)
     cells : np.array
         Global cells, with cell 0 starting close to (-180,-90)
@@ -107,7 +110,7 @@ def SMECV_Grid_v042(subset_flag='land'):
     This grid has 2D shape information, also a rainforest mask is included.
 
     Parameters
-    -------
+    ----------
     subset_flag : str or None, optional (default: 'land')
         Select a subset that should be loaded, e.g. 'land' or 'rainforest'
 
@@ -116,6 +119,7 @@ def SMECV_Grid_v042(subset_flag='land'):
     grid : pygeogrids.CellGrid
         CellGrid object of the selected subset. In Quarter Degree resolution.
     """
+
     warnings.warn("SMECV Grid v4 is deperecated. Please use a newer grid version.",
                   DeprecationWarning)
 
@@ -142,7 +146,8 @@ class SMECV_Grid_v052(CellGrid):
     land cover information as well, that can be used for filtering.
 
     Parameters
-    -------
+    ----------
+
     subset_flag : str or None, optional (default: 'land')
         Select a subset that should be loaded, e.g. land, high_vod, rainforest, cci_lc
     subset_value : float or list, optional (default: 1.)
@@ -153,6 +158,7 @@ class SMECV_Grid_v052(CellGrid):
         Wheather the grid point index starts in the top left (tl) or the bottom
         left ('bl') corner
     """
+
     def __init__(self, subset_flag='land', subset_value=1., cellsize=5.):
 
         self.resolution = 0.25
@@ -178,21 +184,30 @@ class SMECV_Grid_v052(CellGrid):
                                               cells=cells, subset=subset,
                                               shape=shape)
 
-    def subgrid_from_bbox(self, min_lon, min_lat, max_lon, max_lat) -> {BasicGrid,CellGrid}:
-        """ Cut currently loaded grid to a spatial subset """
+    def subgrid_from_bbox(self, min_lon, min_lat, max_lon, max_lat):
+        """
+        Create a subgrid from points within a given bounding box.
+
+        Parameters
+        ----------
+        min_lon : float
+            Lower left corner longitude
+        min_lat: float
+            Lower left corner latitude
+        max_lon : float
+            Upper right corner longitude
+        max_lat : float
+            Upper right corner latitude
+
+        Returns
+        -------
+        subgrid : {BasicGrid,CellGrid}
+            Subgrid of the global grid within the bounding box.
+        """
 
         bbox_gpis = self.get_bbox_grid_points(min_lat, max_lat,
                                               min_lon, max_lon)
 
-        bbox_grid = self.subgrid_from_gpis(bbox_gpis) # type:{BasicGrid,CellGrid}
+        bbox_grid = self.subgrid_from_gpis(bbox_gpis) # type: {BasicGrid,CellGrid}
 
         return bbox_grid
-
-if __name__ == '__main__':
-    globgridv5 = SMECV_Grid_v052(None)
-    subgrid = globgridv5.subgrid_from_bbox(-11., 34., 43., 71.)
-
-    globgridv4 = SMECV_Grid_v042(None)
-    landgridv4 = SMECV_Grid_v042('land')
-    landgridv5 = SMECV_Grid_v052('land')
-    pass

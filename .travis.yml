@@ -1,4 +1,6 @@
 dist: xenial
+os:
+  - linux
 language: python
 sudo: false
 addons:
@@ -10,20 +12,15 @@ notifications:
   email: false
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
-  - "2.7"
   - "3.6"
   - "3.7"
+  - "3.8"
 install:
   # You may want to periodically update this, although the conda update
   # conda line below will keep everything up-to-date.  We do this
   # conditionally because it saves us some downloading if the version is
   # the same.
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-
+  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
@@ -35,7 +32,6 @@ install:
   - conda env create -f environment.yml
   - source activate smecv_grid
   - conda list
-  - pip install .
   - pip list
   - which pip
   - which python
@@ -46,3 +42,12 @@ after_success:
   # report coverage results to coveralls.io
   - pip install coveralls
   - coveralls
+deploy:
+  provider: pypi
+  # better then hiding the token would be to encrypt it with travis...
+  username: __token__
+  password: $PYPI_TOKEN
+  skip_existing: true
+  on:
+    repo: TUW-GEO/smecv-grid
+    tags: true

@@ -21,8 +21,8 @@ soil moisture products and the Copernicus Climate Change Service products.
 
 Full Documentation
 ==================
-For the full documentation click `here <http://smecv-grid.readthedocs.io/en/latest>`_,
-or follow the docs-badge at the top.
+For the `full documentation  <http://smecv-grid.readthedocs.io/en/latest>`_,
+click on the docs-badge at the top.
 
 Installation
 ============
@@ -34,7 +34,7 @@ The package is available on pypi and can be installed via pip:
     pip install smecv_grid
 
 
-Loading and using the smecv grid
+Loading and using the SMECV grid
 ================================
 
 The smecv_grid package contains the global quarter degree (0.25x0.25 DEG) grid
@@ -47,7 +47,7 @@ It contains masks for:
 - One or multiple ESA CCI LC classes (reference year 2010)
 - One or multiple Koeppen-Geiger climate classes (`Peel et al. 2007 <https://www.hydrol-earth-syst-sci.net/11/1633/2007/>`_, DOI:10.5194/hess-11-1633-2007).
 
-For more information on grid definitions and the usage of grids, we refer to
+For more information on grid definitions and the usage of grids in general, we refer to
 the `pygeogrids package <https://github.com/TUW-GEO/pygeogrids>`_ in the background.
 
 
@@ -77,3 +77,6 @@ in `pygeogrids <https://github.com/TUW-GEO/pygeogrids>`_
     tropical_grid = SMECV_Grid_v052(subset_flag='climate_class',
         subset_value=[0., 1., 2.])
 
+To see all available classes and subset values see tables on implemented
+`ESA CCI LC <https://smecv-grid.readthedocs.io/en/latest/?badge=latest#esa-cci-land-cover-classes>`_
+and `KG Climate classes <https://smecv-grid.readthedocs.io/en/latest/?badge=latest#kg-climate-classification>`_

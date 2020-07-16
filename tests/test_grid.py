@@ -21,6 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import numpy as np
 from smecv_grid import SMECV_Grid_v042, SMECV_Grid_v052
 import pytest
 
@@ -127,6 +128,23 @@ def test_bbox_subgrid(SMECV_Grid):
     assert all(subgrid.activearrlon >= min_lon) and all(subgrid.activearrlon <= max_lon)
     assert subgrid.activegpis.size == 18408
 
+@pytest.mark.parametrize("subset", [None, 'land'])
+def test_bbox(subset):
+    min_lon, min_lat, max_lon, max_lat = -11, 34, 43, 71
+
+    grid = SMECV_Grid_v052(subset).subgrid_from_bbox(min_lon, min_lat, max_lon, max_lat)
+    if subset == 'land':
+        assert grid.shape == (18408,)
+    else:
+        assert grid.shape == (148, 216)
+
+    assert all(np.diff(grid.activegpis) > 0)
+    assert all(grid.activearrlon>=min_lon)
+    assert all(grid.activearrlon<=max_lon)
+    assert all(grid.activearrlat<=max_lat)
+    assert all(grid.activearrlat>=min_lat)
+
+
 def test_vers_diff():
     landgrid4, globgrid4 = SMECV_Grid_v042('land'), SMECV_Grid_v042(None)
     landgrid5, globgrid5 = SMECV_Grid_v052('land'), SMECV_Grid_v052(None)
@@ -143,3 +161,4 @@ def test_vers_diff():
     assert globgrid4 == globgrid5
     assert landgrid4 == landgrid5
     assert SMECV_Grid_v042('rainforest') == SMECV_Grid_v052('rainforest')
+

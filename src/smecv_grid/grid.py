@@ -44,9 +44,20 @@ def safe_arange(start:float, stop:float, step:float) -> np.array:
 
     return vals / f_step
 
-def meshgrid(resolution=0.25, cellsize=5., flip_lats=False):
+def range2slice(all_values:np.array, min_max:tuple, include_last=True) -> slice:
+    """ Create slice to subset 2d arrays from dimension values """
+
+    range_values = all_values[(all_values >= min_max[0]) & (all_values <= min_max[1])]
+
+    offset = 1 if include_last else 0
+    return slice(np.where(all_values == range_values[0])[0][0],
+                 np.where(all_values == range_values[-1])[0][0] + offset)
+
+
+def meshgrid(resolution=0.25, cellsize=5., flip_lats=False, lon_range=None,
+             lat_range=None):
     """
-    Create arrays that are used as input to create a global smecv_grid.
+    Create arrays that are used as input to create a smecv_grid.
 
     Parameters
     ----------
@@ -68,6 +79,12 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False):
         e.g. grid.find_nearest_gpi(-100.375,38.375) will return in both versions
         (739038, 0.0) but SMECV_Grid_v042(None).arrlat[739038] is -38.375 and
         not 38.375 as it is in v5.
+    lon_range : tuple, optional (default: None)
+        min_lon, max_lon : Limit meshgrid to lons in range, if None is set,
+        a global grid is created.
+    lat_range : tuple, optional (default: None)
+        min_lat, max_lat : Limit meshgrid to lats in range, if None is net,
+        a global grid is created.
 
     Returns
     -------
@@ -96,11 +113,30 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False):
         lat = np.flipud(lat)
         gpis = np.flipud(gpis)
 
+    if lon_range is not None:
+        lon_slice = range2slice(glob_lons, lon_range)
+    else:
+        lon_slice = slice(None, None)
+
+    if lat_range is not None:
+        lat_slice = range2slice(glob_lats, lat_range)
+    else:
+        lat_slice = slice(None, None)
+
+    lat = lat[lat_slice, lon_slice]
+    lon = lon[lat_slice, lon_slice]
+
+    shape = lon.shape
+
+    gpis = gpis[lat_slice, lon_slice]
+
+    assert gpis.shape == lat.shape == shape
+
     lat = lat.flatten()
     lon = lon.flatten()
     gpis = gpis.flatten()
 
-    cells = lonlat2cell(lon.flatten(), lat.flatten(), cellsize, None, None)
+    cells = lonlat2cell(lon, lat, cellsize, None, None)
 
     return lon, lat, gpis, cells, shape
 
@@ -123,7 +159,6 @@ def SMECV_Grid_v042(subset_flag='land'):
     warnings.warn("SMECV Grid v4 is deperecated. Please use a newer grid version.",
                   DeprecationWarning)
 
-
     lon, lat, gpis, cells, shape = meshgrid(resolution=0.25, cellsize=5.,
                                         flip_lats=True)
 
@@ -131,7 +166,6 @@ def SMECV_Grid_v042(subset_flag='land'):
         subset_grid = ncgrid.load_grid(get_grid_definition_filename(version='04.2'),
                                    subset_flag=subset_flag, subset_value=1.)
         subset = subset_grid.subset
-        shape = (len(subset),)
     else:
         subset = None
 
@@ -140,10 +174,9 @@ def SMECV_Grid_v042(subset_flag='land'):
 
 class SMECV_Grid_v052(CellGrid):
     """
-    Create global SMECV Grid.
-    This grid has 2D shape information, also a rainforest mask is included.
-    The land mask is the same that is defined in gridv4. This version contains
-    land cover information as well, that can be used for filtering.
+    Create a global SMECV Grid, has a shape attribute, uses WGS84 coordinates.
+    A subset of the global grid can be activated based on the passed subset flag
+    and value (e.g. to create a land grid, rainforest grid etc.).
 
     Parameters
     ----------
@@ -154,9 +187,11 @@ class SMECV_Grid_v052(CellGrid):
         Select one or more values of the variable that defines the subset,
         i.e 1. for masks (high_vod, land) or a float or list of floats for one or
         multiple ESA CCI Landcover classes (e.g 190 to load urban points only)
-    origin: {'bl', 'tl'}, optional (default: 'tl')
-        Wheather the grid point index starts in the top left (tl) or the bottom
-        left ('bl') corner
+    cellsize : float
+        Grid points are allocated to /combined into larger cells. By default
+        5 DEG cells are used (each cell contains then 400 grid points). This
+        value can be changed, to e.g. increase the number of points that are
+        stored within a cell file when splitting data into chunks.
     """
 
     def __init__(self, subset_flag='land', subset_value=1., cellsize=5.):
@@ -164,29 +199,41 @@ class SMECV_Grid_v052(CellGrid):
         self.resolution = 0.25
         self.cellsize = cellsize
 
+        self.subset_flag, self.subset_value = subset_flag, subset_value
+
         lon, lat, gpis, cells, shape = \
             meshgrid(resolution=self.resolution, cellsize=self.cellsize,
-                     flip_lats=False)
+                     flip_lats=False) # global grid
+
+        subset_gpis = self._load_subset(self.subset_flag, self.subset_value)
+
+        super(SMECV_Grid_v052, self).__init__(lon=lon, lat=lat, gpis=gpis,
+                                              cells=cells, subset=subset_gpis,
+                                              shape=shape)
+
+    @staticmethod
+    def _load_subset(subset_flag:{str,None}, subset_value:{int,list}) -> {np.array,None}:
+        """ Load grid points for the subset from definition file"""
 
         if subset_flag is not None:
             subset_grid = ncgrid.load_grid(get_grid_definition_filename(version='05.2'),
-                                           subset_flag=subset_flag, subset_value=subset_value)
+                subset_flag=subset_flag, subset_value=subset_value)
 
             if isinstance(subset_grid.activegpis, np.ma.masked_array):
                 subset = subset_grid.activegpis.data
             else:
                 subset = subset_grid.activegpis
-            shape = (len(subset),)
         else:
             subset = None
 
-        super(SMECV_Grid_v052, self).__init__(lon=lon, lat=lat, gpis=gpis,
-                                              cells=cells, subset=subset,
-                                              shape=shape)
+        return subset
 
     def subgrid_from_bbox(self, min_lon, min_lat, max_lon, max_lat):
         """
-        Create a subgrid from points within a given bounding box.
+        Create a subgrid from points within the given bounding box.
+        If there are no points missing in the bounding box (e.g. bbox
+        applied to a global grid without subset), the shape of the bbox
+        will be added as the 2d grid shape, otherwise the grid shape is 1d.
 
         Parameters
         ----------
@@ -205,9 +252,22 @@ class SMECV_Grid_v052(CellGrid):
             Subgrid of the global grid within the bounding box.
         """
 
-        bbox_gpis = self.get_bbox_grid_points(min_lat, max_lat,
-                                              min_lon, max_lon)
+        gpis = sorted(self.get_bbox_grid_points(min_lat, max_lat, min_lon, max_lon))
 
-        bbox_grid = self.subgrid_from_gpis(bbox_gpis) # type: {BasicGrid,CellGrid}
+        grid = self.subgrid_from_gpis(gpis)
 
-        return bbox_grid
+        _, _, box_gpis, _, box_shape = \
+            meshgrid(self.resolution, self.cellsize, False,
+                     (min_lon, max_lon), (min_lat, max_lat))  # box
+
+        if gpis == sorted(box_gpis):
+            # If the subgrid gpis are the same as the box gpis, add shape
+            grid.shape = box_shape
+        else:
+            grid.shape = (len(gpis),)
+
+        return grid
+
+
+if __name__ == '__main__':
+    grid = SMECV_Grid_v052(None).subgrid_from_bbox(-11, 34, 43, 71)

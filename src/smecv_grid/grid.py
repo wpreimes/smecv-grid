@@ -28,16 +28,15 @@ import numpy as np
 import warnings
 
 def get_grid_definition_filename(version:str) -> str:
-    """
-    Get file path of netcdf for the passed version as in the file name.
-    """
+    """ Get file path of netcdf for the passed version as in the file name. """
+
     grid_info_path = os.path.join(os.path.dirname(__file__),
                                   'definition_files')
     return os.path.join(grid_info_path,
                         'ESA-CCI-SOILMOISTURE-LAND_AND_RAINFOREST_MASK-fv{}.nc'.format(version))
 
 def safe_arange(start:float, stop:float, step:float) -> np.array:
-    """ Version of np.aranage that can handle small step sizes """
+    """ Version of np.arange that can handle small step sizes """
 
     f_step = (1. / float(step))
     vals = np.arange(float(start) * f_step, float(stop) * f_step, float(step) * f_step)
@@ -57,7 +56,9 @@ def range2slice(all_values:np.array, min_max:tuple, include_last=True) -> slice:
 def meshgrid(resolution=0.25, cellsize=5., flip_lats=False, lon_range=None,
              lat_range=None):
     """
-    Create arrays that are used as input to create a smecv_grid.
+    Create arrays that are used as input to create a smecv_grid. This is based
+    on a range of lons/lats, i.e. the meshgrid is always rectangular, 2d,
+    and has no gaps.
 
     Parameters
     ----------
@@ -81,10 +82,10 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False, lon_range=None,
         not 38.375 as it is in v5.
     lon_range : tuple, optional (default: None)
         min_lon, max_lon : Limit meshgrid to lons in range, if None is set,
-        a global grid is created.
+        a global grid is created. This is basically a bounding box subset.
     lat_range : tuple, optional (default: None)
         min_lat, max_lat : Limit meshgrid to lats in range, if None is net,
-        a global grid is created.
+        a global grid is created. This is basically a bounding box subset.
 
     Returns
     -------
@@ -97,7 +98,7 @@ def meshgrid(resolution=0.25, cellsize=5., flip_lats=False, lon_range=None,
     cells : np.array
         Global cells, with cell 0 starting close to (-180,-90)
     shape : tuple
-        rows and columns, i.e. unique lats, lons in the global grid
+        rows and columns, i.e. unique lats, lons in the rectangular grid
     """
 
     glob_lons = safe_arange(-180 + resolution / 2, 180 + resolution / 2, resolution)
@@ -160,11 +161,11 @@ def SMECV_Grid_v042(subset_flag='land'):
                   DeprecationWarning)
 
     lon, lat, gpis, cells, shape = meshgrid(resolution=0.25, cellsize=5.,
-                                        flip_lats=True)
+                                            flip_lats=True)
 
     if subset_flag is not None:
         subset_grid = ncgrid.load_grid(get_grid_definition_filename(version='04.2'),
-                                   subset_flag=subset_flag, subset_value=1.)
+                                       subset_flag=subset_flag, subset_value=1.)
         subset = subset_grid.subset
     else:
         subset = None
@@ -182,7 +183,9 @@ class SMECV_Grid_v052(CellGrid):
     ----------
 
     subset_flag : str or None, optional (default: 'land')
-        Select a subset that should be loaded, e.g. land, high_vod, rainforest, cci_lc
+        Select a subset that should be loaded, e.g. land, high_vod, rainforest,
+        landcover_
+
     subset_value : float or list, optional (default: 1.)
         Select one or more values of the variable that defines the subset,
         i.e 1. for masks (high_vod, land) or a float or list of floats for one or
@@ -228,7 +231,7 @@ class SMECV_Grid_v052(CellGrid):
 
         return subset
 
-    def subgrid_from_bbox(self, min_lon, min_lat, max_lon, max_lat):
+    def subgrid_from_bbox(self, min_lon, min_lat, max_lon, max_lat) -> {BasicGrid,CellGrid}:
         """
         Create a subgrid from points within the given bounding box.
         If there are no points missing in the bounding box (e.g. bbox
